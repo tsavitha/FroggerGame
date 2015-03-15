@@ -5,9 +5,8 @@
     var NSTONEROWS = 3;
 
     var getInitialPosition = function (min, max) {
-        var pos = Math.round(min + Math.random() * (max - min));
 
-        return pos;
+        return Math.round(min + Math.random() * (max - min));
     };
 
     var resetPlayerPosition = function() {
@@ -26,11 +25,10 @@
         var posX = ns.player.x;
         var posY = ns.player.y;
 
-        if(posY > 0 && posY < 4) {
+        if(ns.player.vx > 0 && ns.player.vy < 4) {
             ns.allEnemies.forEach(function (enemy) {
-                //if((enemy.x >= posX * ns.COLPIXELCOUNT && enemy.x <= (posX+1)*ns.COLPIXELCOUNT) && (enemy.y >= posY * ns.ROWPIXELCOUNT && enemy.y <= (posY+1)*ns.ROWPIXELCOUNT)) {
-                if((enemy.x >= posX && enemy.x <= pos+ns.COLPIXELCOUNT) && (enemy.y >= posY && enemy.y <= posY+ns.ROWPIXELCOUNT)) {
-                    console.log("collision - you loose :-(");
+                if((enemy.x >= posX && enemy.x <= posX+ns.COLPIXELCOUNT) && (enemy.y+20 === posY)) {
+                    console.log("enemy collision - you loose :-(");
                     resetPlayerPosition();
                 }
             });
@@ -39,11 +37,22 @@
 
     var rockCollision = function() {
 
+        var posX = ns.player.x;
+        var posY = ns.player.y;
+
+        if(ns.player.vx > 0 && ns.player.vy < 4) {
+            ns.rocks.forEach(function (rock) {
+                if((rock.x === posX) && (rock.y+20 === posY)) {
+                    console.log("rock collision - you loose :-(");
+                    resetPlayerPosition();
+                }
+            });
+        }
     };
 
     ns.checkCollisions = function() {
         enemyCollision();
-
+        rockCollision();
     };
 
 // Enemies our player must avoid
@@ -73,9 +82,7 @@
         }
         else {
             this.x += this.incrementer;
-            //console.log("inside update enemy, x = " + this.x);
         }
-        //checkCollisions();
     };
 
 // Draw the enemy on the screen, required method for game
@@ -140,23 +147,26 @@
         }
     };
 
+    ns.createInstances = function() {
+
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
 
-    var i;
-    ns.allEnemies = [];
-    ns.rocks = [];
+        var i;
+        ns.allEnemies = [];
+        ns.rocks = [];
 
-    for (i = 0; i < NSTONEROWS; i++) {
-        ns.allEnemies.push(new Enemy());
-    }
+        for (i = 0; i < NSTONEROWS; i++) {
+            ns.allEnemies.push(new Enemy());
+        }
 
-    ns.player = new Player();
+        ns.player = new Player();
 
-    for(i=0; i<(NSTONEROWS-1); i++) {
-        ns.rocks.push(new Rock());
-    }
+        for(i=0; i<(NSTONEROWS-1); i++) {
+            ns.rocks.push(new Rock());
+        }
+    };
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
