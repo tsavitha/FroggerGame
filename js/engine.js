@@ -157,11 +157,13 @@ var Engine = (function(global) {
             enemy.render();
         });
 
-        ns.player.render();
-
         ns.rocks.forEach(function(rock) {
             rock.render();
         });
+
+        ns.player.render();
+
+        ns.reward.render();
 
     }
 
