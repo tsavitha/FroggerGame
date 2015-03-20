@@ -1,3 +1,43 @@
+* {
+    padding: 0;
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+}
+
 body {
+    background-color: #999;
+}
+
+h3 {
+    margin-left: 30px;
+    font-style: italic;
+    font-family: 'lucida grande', tahoma, verdana, arial, sans-serif;
+}
+
+.container {
+    padding: 0;
+    background-color: #70efe6;
     text-align: center;
+}
+
+.btn-default,
+.btn {
+    background-color: #70efe6;
+    border: none;
+}
+
+#title-imgage {
+    margin: 15px 0 0 0;
+}
+
+#canvas-placeholder {
+}
+
+#character-menu {
+    margin-top: 20px;
+}
+
+#game-summary {
+    margin-top: 40px;
+    text-align: left;
 }

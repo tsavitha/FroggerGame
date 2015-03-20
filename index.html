@@ -2,12 +2,55 @@
 <html>
 <head>
     <title>Effective JavaScript: Frogger</title>
+
+    <!-- Load the page and bootstrap stylesheets -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
+
+    <!-- Load the different javascript files used in the project -->
+    <script src="js/jQuery.js"></script>
     <script src="js/namespace.js"></script>
     <script src="js/resources.js"></script>
     <script src="js/app.js"></script>
-    <script src="js/engine.js"></script>
+
+    <meta name="viewport" content="width=device-width">
+</head>
+<body>
+<div id="main" class="container">
+    <div id="title-imgage">
+        <img src="images/LetterF.png">
+        <img src="images/LetterR.png">
+        <img src="images/LetterO.png">
+        <img src="images/LetterG.png">
+        <img src="images/LetterG.png">
+        <img src="images/LetterE.png">
+        <img src="images/LetterR.png">
+    </div>
+<!--
+        <div id="character-menu">
+            <h2>Pick a character</h2>
+            <div class="btn-group" data-toggle="buttons">
+                <label class="btn">
+                    <input type="radio" id="char-boy" name="character" value="boy"/>
+                    <img src="images/char-boy.png">
+                </label>
+                <label class="btn">
+                    <input type="radio" id="char-girl" name="character" value="girl"/>
+                    <img src="images/char-cat-girl.png">
+                </label>
+            </div>
+        </div>
+-->
+    <div id="game-summary" class="row">
+        <div id="life" class="col-lg-3 col-md-3 col-md-offset-3 col-lg-offset-3">
+            <h3>Life Remaining: </h3>
+        </div>
+        <div id="points" class="col-lg-3 col-md-3">
+            <h3>Total Points: </h3>
+        </div>
+    </div>
+    <div id="canvas-placeholder"></div>
+</div>
+<script src="js/engine.js"></script>
 </body>
 </html>

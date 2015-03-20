@@ -10,16 +10,38 @@
         return Math.round(min + Math.random() * (max - min));
     };
 
-    var resetPlayerPosition = function() {
-        ns.player.vx = 2;
-        ns.player.vy = 5;
+    var updateGameSummary = function(updateInfo, updateStr) {
+
+        var strToReplace = "<span>" + updateStr + "</span>";
+
+        if(updateInfo === 'points') {
+            $('#points').append(strToReplace);
+        }
+        else if(updateInfo === 'gems') {
+            $('#gems').append(strToReplace);
+        }
+    };
+
+    var resetGame = function() {
+        if(ns.player.life > 0) {
+            ns.player.vx = 2;
+            ns.player.vy = 5;
+            ns.rock = new Rock();
+            ns.reward = new Reward();
+        }
+        else {
+            alert("Do you want to continue?");
+            ns.createInstances();
+
+        }
     };
 
     var reachedHome = function() {
         if(ns.player.vy === 0) {
             ns.player.points += HOMEPOINTS;
+            updateGameSummary('points', ns.player.points);
             console.log("you win!! - " + ns.player.points);
-            resetPlayerPosition();
+            resetGame();
         }
     };
 
@@ -28,22 +50,25 @@
         if(ns.player.vx > 0 && ns.player.vy < 4) {
             ns.allEnemies.forEach(function (enemy) {
                 if((enemy.x >= ns.player.x && enemy.x <= (ns.player.x+ns.COLPIXELCOUNT)) && (enemy.y+20 === ns.player.y)) {
-                    console.log("enemy collision - you loose :-(");
-                    resetPlayerPosition();
+                    ns.player.life -= 1;
+                    updateGameSummary('life', ns.player.life);
+                    console.log("enemy collision - you loose :-( " + ns.player.life);
+                    resetGame();
                 }
             });
         }
     };
 
+
     var rockCollision = function() {
 
         if(ns.player.vx > 0 && ns.player.vy < 4) {
-            ns.rocks.forEach(function (rock) {
-                if((rock.x === ns.player.x) && (rock.y+20 === ns.player.y)) {
-                    console.log("rock collision - you loose :-(");
-                    resetPlayerPosition();
-                }
-            });
+            if((ns.rock.x === ns.player.x) && (ns.rock.y+20 === ns.player.y)) {
+                ns.player.life -= 1;
+                updateGameSummary('life', ns.player.life);
+                console.log("rock collision - you loose :-( " + ns.player.life);
+                resetGame();
+            }
         }
     };
 
@@ -52,6 +77,8 @@
             if((ns.reward.x-15) === ns.player.x && (ns.reward.y-10) === ns.player.y) {
                 console.log("Reward!!! " + rewardsArr[ns.reward.randomSel].points);
                 ns.player.points += rewardsArr[ns.reward.randomSel].points;
+                updateGameSummary('points', ns.player.points);
+                ns.player.gemCollection[ns.reward.randomSel].noCollected += 1;
                 ns.reward = new Reward();
             }
         }
@@ -116,11 +143,23 @@
         {'url' : 'images/star.png', 'points' : 50}
     ];
 
+    var getRewardPosition = function() {
+        point = {};
+
+        do {
+            point.x = (getRandomNumberBetween(1, 3) * ns.COLPIXELCOUNT);
+            point.y = (getRandomNumberBetween(1, 3) * ns.ROWPIXELCOUNT);
+        } while(point.x === ns.rock.x && point.y === ns.rock.y+20);
+
+        return point;
+    };
+
     var Reward = function() {
         this.randomSel = getRandomNumberBetween(0, 3);
         this.sprite = rewardsArr[this.randomSel].url;
-        this.x = (getRandomNumberBetween(1, 3) * ns.COLPIXELCOUNT) + 15;
-        this.y = (getRandomNumberBetween(1, 3) * ns.ROWPIXELCOUNT) + 10;
+        point = getRewardPosition();
+        this.x = point.x + 15;
+        this.y = point.y + 10;
         this.redeemed = false;
     };
 
@@ -129,16 +168,41 @@
     };
 
 
+/*
+    var getCharacterUrl = function() {
+        var url;
+
+        if(ns.proceed) {
+            url = ns.characterUrl;
+        }
+        else {
+            url = 'images/char-boy.png';
+        }
+
+        console.log(url + " " + ns.proceed);
+
+        return url;
+    };
+
+*/
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
     var Player = function () {
+        //this.sprite = getCharacterUrl();
         this.sprite = 'images/char-boy.png';
         this.vx = 2;
         this.vy = 5;
         this.x = this.vx * ns.COLPIXELCOUNT;
         this.y = this.vy * ns.ROWPIXELCOUNT;
+        this.life = 3;
         this.points = 0;
+        this.gemCollection = [
+            {'gem' : 'orange', 'noCollected' : 0},
+            {'gem' : 'blue', 'noCollected' : 0},
+            {'gem' : 'green', 'noCollected' : 0},
+            {'gem' : 'star', 'noCollected' : 0},
+        ];
     };
 
     Player.prototype.update = function (dt) {
@@ -184,15 +248,12 @@
 
         var i;
         ns.allEnemies = [];
-        ns.rocks = [];
 
         for (i = 0; i < NSTONEROWS; i++) {
             ns.allEnemies.push(new Enemy());
         }
 
-        for(i=0; i<(NSTONEROWS-1); i++) {
-            ns.rocks.push(new Rock());
-        }
+        ns.rock = new Rock();
 
         ns.reward = new Reward();
 

@@ -14,9 +14,10 @@
  * a little simpler to work with.
  */
 
-var Engine = (function(global) {
+var ns = MYRESUMEAPP; // Creating an alias for the global namespace.
 
-    var ns = MYRESUMEAPP; // Creating an alias for the global namespace.
+ns.Engine = (function (global) {
+
 
     /* Predefine the variables we'll be using within this scope,
      * create the canvas element, grab the 2D context for that canvas
@@ -32,7 +33,11 @@ var Engine = (function(global) {
 
     ns.canvas.width = 505;
     ns.canvas.height = 606;
-    ns.doc.body.appendChild(ns.canvas);
+
+    $('#canvas-placeholder').append(ns.canvas);
+
+    ns.characterUrl = null;
+    ns.proceed = false;
 
     /* This function serves as the kickoff point for the game loop itself
      * and handles properly calling the update and render methods.
@@ -96,7 +101,7 @@ var Engine = (function(global) {
      * render methods.
      */
     function updateEntities(dt) {
-        ns.allEnemies.forEach(function(enemy) {
+        ns.allEnemies.forEach(function (enemy) {
             enemy.update(dt);
         });
         ns.player.update();
@@ -153,17 +158,25 @@ var Engine = (function(global) {
         /* Loop through all of the objects within the allEnemies array and call
          * the render function you have defined.
          */
-        ns.allEnemies.forEach(function(enemy) {
+        ns.allEnemies.forEach(function (enemy) {
             enemy.render();
         });
 
-        ns.rocks.forEach(function(rock) {
-            rock.render();
-        });
+        /*
+         ns.rocksAndRewards.forEach(function(obj) {
+         if(obj.objType === 'Rock') {
+         obj.objInstance.render();
+         }
+         else if(obj.objType === 'Reward') {
+         obj.objInstance.render();
+         }
+         });
+         */
 
-        ns.player.render();
+        ns.rock.render();
 
         ns.reward.render();
+        ns.player.render();
 
     }
 
@@ -185,14 +198,32 @@ var Engine = (function(global) {
         'images/grass-block.png',
         'images/enemy-bug.png',
         'images/char-boy.png',
+        'images/char-cat-girl.png',
         'images/rock.png',
         'images/gem-blue.png',
         'images/gem-green.png',
         'images/gem-orange.png',
         'images/star.png'
     ]);
+
+
     ns.Resources.onReady(init);
 
+/*
+    var pickCharacter = function () {
+        $('#char-boy').click(function () {
+            ns.characterUrl = 'images/char-boy.png';
+            ns.player.sprite = 'images/char-boy.png';
+            ns.proceed = true;
+        });
+        $('#char-girl').click(function () {
+            ns.characterUrl = 'images/char-cat-girl.png';
+            ns.player.sprite = 'images/char-cat-girl.png';
+            ns.proceed = true;
+        });
+    }();
+
+*/
     /* Assign the canvas' context object to the global variable (the window
      * object when run in a browser) so that developer's can use it more easily
      * from within their app.js files.
