@@ -26,6 +26,17 @@ h3 {
     border: none;
 }
 
+.game-summary-icon {
+    width: 48px;
+    height: 70px;
+    float: right;
+}
+
+.game-summary-table {
+    float: left;
+    margin: 30px 0 10px 0;
+}
+
 #title-imgage {
     margin: 15px 0 0 0;
 }

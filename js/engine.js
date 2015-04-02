@@ -29,7 +29,7 @@ ns.Engine = (function (global) {
     ns.ctx = ns.canvas.getContext('2d');
     ns.COLPIXELCOUNT = 101;
     ns.ROWPIXELCOUNT = 83;
-    var lastTime;
+    ns.lastTime;
 
     ns.canvas.width = 505;
     ns.canvas.height = 606;
@@ -42,7 +42,7 @@ ns.Engine = (function (global) {
     /* This function serves as the kickoff point for the game loop itself
      * and handles properly calling the update and render methods.
      */
-    function main() {
+    ns.main = function () {
         /* Get our time delta information which is required if your game
          * requires smooth animation. Because everyone's computer processes
          * instructions at different speeds we need a constant value that
@@ -50,7 +50,7 @@ ns.Engine = (function (global) {
          * computer is) - hurray time!
          */
         var now = Date.now(),
-            dt = (now - lastTime) / 1000.0;
+            dt = (now - ns.lastTime) / 1000.0;
 
         /* Call our update/render functions, pass along the time delta to
          * our update function since it may be used for smooth animation.
@@ -61,12 +61,12 @@ ns.Engine = (function (global) {
         /* Set our lastTime variable which is used to determine the time delta
          * for the next time this function is called.
          */
-        lastTime = now;
+        ns.lastTime = now;
 
         /* Use the browser's requestAnimationFrame function to call this
          * function again as soon as the browser is able to draw another frame.
          */
-        ns.win.requestAnimationFrame(main);
+        ns.win.requestAnimationFrame(ns.main);
     }
 
     /* This function does some initial setup that should only occur once,
@@ -75,8 +75,8 @@ ns.Engine = (function (global) {
      */
     function init() {
         reset();
-        lastTime = Date.now();
-        main();
+        ns.lastTime = Date.now();
+        ns.main();
     }
 
     /* This function is called by main (our game loop) and itself calls all

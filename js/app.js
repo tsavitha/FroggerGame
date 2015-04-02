@@ -10,19 +10,28 @@
         return Math.round(min + Math.random() * (max - min));
     };
 
-    var updateGameSummary = function(updateInfo, updateStr) {
+    var resetGame = function() {
+        ns.createInstances();
+        updateLifeGameSummary(3);
+        updatePointsGameSummary(0);
+        ns.lastTime = Date.now();
+        ns.main();
 
-        var strToReplace = "<span>" + updateStr + "</span>";
-
-        if(updateInfo === 'points') {
-            $('#points').append(strToReplace);
-        }
-        else if(updateInfo === 'gems') {
-            $('#gems').append(strToReplace);
-        }
     };
 
-    var resetGame = function() {
+    var updatePointsGameSummary = function(updateStr) {
+
+        $('#points').text(updateStr);
+
+    };
+
+    var updateLifeGameSummary = function(updateStr) {
+
+        $('#life').text(updateStr);
+
+    };
+
+    var resetPlay = function() {
         if(ns.player.life > 0) {
             ns.player.vx = 2;
             ns.player.vy = 5;
@@ -30,18 +39,22 @@
             ns.reward = new Reward();
         }
         else {
-            alert("Do you want to continue?");
-            ns.createInstances();
+            var continueGame = confirm("Do you want to continue?");
 
+            if(continueGame) {
+                resetGame();
+            }
+            else {
+                window.close();
+            }
         }
     };
 
     var reachedHome = function() {
         if(ns.player.vy === 0) {
             ns.player.points += HOMEPOINTS;
-            updateGameSummary('points', ns.player.points);
-            console.log("you win!! - " + ns.player.points);
-            resetGame();
+            updatePointsGameSummary(ns.player.points);
+            resetPlay();
         }
     };
 
@@ -51,9 +64,8 @@
             ns.allEnemies.forEach(function (enemy) {
                 if((enemy.x >= ns.player.x && enemy.x <= (ns.player.x+ns.COLPIXELCOUNT)) && (enemy.y+20 === ns.player.y)) {
                     ns.player.life -= 1;
-                    updateGameSummary('life', ns.player.life);
-                    console.log("enemy collision - you loose :-( " + ns.player.life);
-                    resetGame();
+                    updateLifeGameSummary(ns.player.life);
+                    resetPlay();
                 }
             });
         }
@@ -65,9 +77,8 @@
         if(ns.player.vx > 0 && ns.player.vy < 4) {
             if((ns.rock.x === ns.player.x) && (ns.rock.y+20 === ns.player.y)) {
                 ns.player.life -= 1;
-                updateGameSummary('life', ns.player.life);
-                console.log("rock collision - you loose :-( " + ns.player.life);
-                resetGame();
+                updateLifeGameSummary(ns.player.life);
+                resetPlay();
             }
         }
     };
@@ -77,7 +88,7 @@
             if((ns.reward.x-15) === ns.player.x && (ns.reward.y-10) === ns.player.y) {
                 console.log("Reward!!! " + rewardsArr[ns.reward.randomSel].points);
                 ns.player.points += rewardsArr[ns.reward.randomSel].points;
-                updateGameSummary('points', ns.player.points);
+                updatePointsGameSummary(ns.player.points);
                 ns.player.gemCollection[ns.reward.randomSel].noCollected += 1;
                 ns.reward = new Reward();
             }
@@ -246,6 +257,7 @@
         // Place all enemy objects in an array called allEnemies
         // Place the player object in a variable called player
 
+        console.log("inside create Instances");
         var i;
         ns.allEnemies = [];
 
