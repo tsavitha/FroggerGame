@@ -1,21 +1,20 @@
 (function () {
 
-    var ns = MYRESUMEAPP; // Creating an alias for the global namespace.
+    var ns = froggerGame||{}; // Creating an alias for the global namespace.
 
     var NSTONEROWS = 3;
     var HOMEPOINTS = 200;
+    var NOFLIVES = 3;
 
     var getRandomNumberBetween = function (min, max) {
 
         return Math.round(min + Math.random() * (max - min));
     };
 
-    var resetGame = function() {
-        ns.createInstances();
-        updateLifeGameSummary(3);
+    ns.resetGameSummary = function() {
+
+        updateLifeGameSummary(NOFLIVES);
         updatePointsGameSummary(0);
-        ns.lastTime = Date.now();
-        ns.main();
 
     };
 
@@ -31,6 +30,33 @@
 
     };
 
+    var getRecentGameSummary = function() {
+        var gemSelector;
+
+        for(var i=0; i<ns.player.gemCollection.length; i++) {
+            gemSelector = "#" + ns.player.gemCollection[i].gem;
+            $(gemSelector).text(ns.player.gemCollection[i].noCollected);
+        }
+        $('#total').text(ns.player.points);
+    };
+
+    var resetGame = function() {
+        ns.createInstances();
+        ns.start();
+
+    };
+
+    ns.stopGame = function() {
+
+        getRecentGameSummary();
+        $('#game-summary-modal').modal({
+            keyboard: false
+        });
+        ns.stop();
+        ns.init();
+
+    }
+
     var resetPlay = function() {
         if(ns.player.life > 0) {
             ns.player.vx = 2;
@@ -39,14 +65,14 @@
             ns.reward = new Reward();
         }
         else {
-            var continueGame = confirm("Do you want to continue?");
-
-            if(continueGame) {
+            var newGame = confirm("Do you want to play another game?");
+            if(newGame) {
                 resetGame();
             }
             else {
-                window.close();
+                ns.stopGame();
             }
+            ns.resetGameSummary();
         }
     };
 
@@ -86,7 +112,6 @@
     var redeemReward = function() {
         if(!ns.reward.redeemed && ns.player.vx > 0 && ns.player.vy < 4) {
             if((ns.reward.x-15) === ns.player.x && (ns.reward.y-10) === ns.player.y) {
-                console.log("Reward!!! " + rewardsArr[ns.reward.randomSel].points);
                 ns.player.points += rewardsArr[ns.reward.randomSel].points;
                 updatePointsGameSummary(ns.player.points);
                 ns.player.gemCollection[ns.reward.randomSel].noCollected += 1;
@@ -137,6 +162,70 @@
 
     };
 
+// Now write your own player class
+// This class requires an update(), render() and
+// a handleInput() method.
+    var Player = function () {
+        this.sprite = 'images/char-boy.png';
+        this.vx = 2;
+        this.vy = 5;
+        this.x = this.vx * ns.COLPIXELCOUNT;
+        this.y = this.vy * ns.ROWPIXELCOUNT;
+        this.life = 3;
+        this.points = 0;
+        this.gemCollection = [
+            {'gem' : 'orange', 'noCollected' : 0},
+            {'gem' : 'blue', 'noCollected' : 0},
+            {'gem' : 'green', 'noCollected' : 0},
+            {'gem' : 'star', 'noCollected' : 0},
+        ];
+    };
+
+    Player.prototype.update = function (dt) {
+
+        this.x = this.vx * ns.COLPIXELCOUNT;
+        this.y = this.vy * ns.ROWPIXELCOUNT;
+        reachedHome();
+    };
+
+    Player.prototype.render = function () {
+        ns.ctx.drawImage(ns.Resources.get(this.sprite), this.x, this.y);
+    };
+
+    Player.prototype.handleInput = function (keyCode, event) {
+        switch (keyCode) {
+            case 'left' :
+                if (this.vx > 0) {
+                    this.vx -= 1;
+                }
+                stopDefaultAction();
+                break;
+            case 'up' :
+                if (this.vy > 0) {
+                    this.vy -= 1;
+                }
+                stopDefaultAction();
+                break;
+            case 'right' :
+                if (this.vx < 4) {
+                    this.vx += 1;
+                }
+                stopDefaultAction();
+                break;
+            case 'down' :
+                if (this.vy < 5) {
+                    this.vy += 1;
+                }
+                stopDefaultAction();
+                break;
+        }
+    };
+
+    function stopDefaultAction() {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+
     var Rock = function() {
         this.sprite = 'images/rock.png';
         this.x = (getRandomNumberBetween(1, 3) * ns.COLPIXELCOUNT);
@@ -179,85 +268,12 @@
     };
 
 
-/*
-    var getCharacterUrl = function() {
-        var url;
-
-        if(ns.proceed) {
-            url = ns.characterUrl;
-        }
-        else {
-            url = 'images/char-boy.png';
-        }
-
-        console.log(url + " " + ns.proceed);
-
-        return url;
-    };
-
-*/
-// Now write your own player class
-// This class requires an update(), render() and
-// a handleInput() method.
-    var Player = function () {
-        //this.sprite = getCharacterUrl();
-        this.sprite = 'images/char-boy.png';
-        this.vx = 2;
-        this.vy = 5;
-        this.x = this.vx * ns.COLPIXELCOUNT;
-        this.y = this.vy * ns.ROWPIXELCOUNT;
-        this.life = 3;
-        this.points = 0;
-        this.gemCollection = [
-            {'gem' : 'orange', 'noCollected' : 0},
-            {'gem' : 'blue', 'noCollected' : 0},
-            {'gem' : 'green', 'noCollected' : 0},
-            {'gem' : 'star', 'noCollected' : 0},
-        ];
-    };
-
-    Player.prototype.update = function (dt) {
-
-        this.x = this.vx * ns.COLPIXELCOUNT;
-        this.y = this.vy * ns.ROWPIXELCOUNT;
-        reachedHome();
-    };
-
-    Player.prototype.render = function () {
-        ns.ctx.drawImage(ns.Resources.get(this.sprite), this.x, this.y);
-    };
-
-    Player.prototype.handleInput = function (keyCode) {
-        switch (keyCode) {
-            case 'left' :
-                if (this.vx > 0) {
-                    this.vx -= 1;
-                }
-                break;
-            case 'up' :
-                if (this.vy > 0) {
-                    this.vy -= 1;
-                }
-                break;
-            case 'right' :
-                if (this.vx < 4) {
-                    this.vx += 1;
-                }
-                break;
-            case 'down' :
-                if (this.vy < 5) {
-                    this.vy += 1;
-                }
-        }
-    };
-
     ns.createInstances = function() {
 
         // Now instantiate your objects.
         // Place all enemy objects in an array called allEnemies
         // Place the player object in a variable called player
 
-        console.log("inside create Instances");
         var i;
         ns.allEnemies = [];
 
@@ -276,7 +292,7 @@
     // This listens for key presses and sends the keys to your
     // Player.handleInput() method. You don't need to modify this.
 
-    document.addEventListener('keyup', function (e) {
+    document.addEventListener('keydown', function (e) {
         var allowedKeys = {
             37: 'left',
             38: 'up',
@@ -284,7 +300,8 @@
             40: 'down'
         };
 
-        ns.player.handleInput(allowedKeys[e.keyCode]);
+        ns.player.handleInput(allowedKeys[e.keyCode], e);
+
     });
 })();
 

@@ -14,7 +14,7 @@
  * a little simpler to work with.
  */
 
-var ns = MYRESUMEAPP; // Creating an alias for the global namespace.
+var ns = froggerGame||{}; // Creating an alias for the global namespace.
 
 ns.Engine = (function (global) {
 
@@ -29,20 +29,21 @@ ns.Engine = (function (global) {
     ns.ctx = ns.canvas.getContext('2d');
     ns.COLPIXELCOUNT = 101;
     ns.ROWPIXELCOUNT = 83;
-    ns.lastTime;
+    var lastTime;
+    var requestId = null;
 
     ns.canvas.width = 505;
     ns.canvas.height = 606;
 
-    $('#canvas-placeholder').append(ns.canvas);
-
     ns.characterUrl = null;
     ns.proceed = false;
+
+    $('#canvas-placeholder').append(ns.canvas);
 
     /* This function serves as the kickoff point for the game loop itself
      * and handles properly calling the update and render methods.
      */
-    ns.main = function () {
+    function main() {
         /* Get our time delta information which is required if your game
          * requires smooth animation. Because everyone's computer processes
          * instructions at different speeds we need a constant value that
@@ -50,7 +51,7 @@ ns.Engine = (function (global) {
          * computer is) - hurray time!
          */
         var now = Date.now(),
-            dt = (now - ns.lastTime) / 1000.0;
+            dt = (now - lastTime) / 1000.0;
 
         /* Call our update/render functions, pass along the time delta to
          * our update function since it may be used for smooth animation.
@@ -61,23 +62,65 @@ ns.Engine = (function (global) {
         /* Set our lastTime variable which is used to determine the time delta
          * for the next time this function is called.
          */
-        ns.lastTime = now;
+
+        lastTime = now;
 
         /* Use the browser's requestAnimationFrame function to call this
          * function again as soon as the browser is able to draw another frame.
          */
-        ns.win.requestAnimationFrame(ns.main);
+
+        if(ns.proceed) {
+            requestId = ns.win.requestAnimationFrame(main);
+        }
     }
 
-    /* This function does some initial setup that should only occur once,
-     * particularly setting the lastTime variable that is required for the
-     * game loop.
+    /* This function is called everytime a new game is started and does
+     * some initial setup that should only occur once, particularly
+     * setting the lastTime variable that is required for the game loop.
      */
-    function init() {
+    ns.init = function () {
+        //$('#canvas-placeholder').append(ns.canvas);
         reset();
-        ns.lastTime = Date.now();
-        ns.main();
+        render();
+        ns.resetGameSummary();
     }
+
+    /* This function does nothing but it could have been a good place to
+     * handle game reset states - maybe a new game menu or a game over screen
+     * those sorts of things. It's only called once by the init() method.
+     */
+    function reset() {
+        ns.createInstances();
+    }
+
+    $('#new-game').click(function() {
+        ns.start();
+    });
+
+    ns.start = function () {
+        if(requestId === null) {
+            ns.proceed = true;
+            lastTime = Date.now();
+            main();
+        }
+    }
+
+    $('#stop-game').click(function() {
+
+        var quitGame = confirm("Are you sure you want to quit?");
+
+        if(quitGame) {
+            ns.stopGame();
+        }
+    });
+
+    ns.stop = function() {
+        if(requestId !== null) {
+            //$('#canvas-placeholder').empty();
+            ns.proceed = false;
+            requestId = null;
+        }
+    };
 
     /* This function is called by main (our game loop) and itself calls all
      * of the functions which may need to update entity's data. Based on how
@@ -107,13 +150,22 @@ ns.Engine = (function (global) {
         ns.player.update();
     }
 
-    /* This function initially draws the "game level", it will then call
-     * the renderEntities function. Remember, this function is called every
+    /* This function calls the renderGameSurface function an the
+     * renderEntities function. Remember, this function is called every
      * game tick (or loop of the game engine) because that's how games work -
      * they are flipbooks creating the illusion of animation but in reality
      * they are just drawing the entire screen over and over.
      */
     function render() {
+
+        renderGameSurface();
+        renderEntities();
+    }
+
+    /* This function draws the "game level"
+     */
+    function renderGameSurface() {
+
         /* This array holds the relative URL to the image used
          * for that particular row of the game level.
          */
@@ -146,8 +198,6 @@ ns.Engine = (function (global) {
             }
         }
 
-
-        renderEntities();
     }
 
     /* This function is called by the render function and is called on each game
@@ -162,30 +212,10 @@ ns.Engine = (function (global) {
             enemy.render();
         });
 
-        /*
-         ns.rocksAndRewards.forEach(function(obj) {
-         if(obj.objType === 'Rock') {
-         obj.objInstance.render();
-         }
-         else if(obj.objType === 'Reward') {
-         obj.objInstance.render();
-         }
-         });
-         */
-
         ns.rock.render();
-
         ns.reward.render();
         ns.player.render();
 
-    }
-
-    /* This function does nothing but it could have been a good place to
-     * handle game reset states - maybe a new game menu or a game over screen
-     * those sorts of things. It's only called once by the init() method.
-     */
-    function reset() {
-        ns.createInstances();
     }
 
     /* Go ahead and load all of the images we know we're going to need to
@@ -206,8 +236,7 @@ ns.Engine = (function (global) {
         'images/star.png'
     ]);
 
-
-    ns.Resources.onReady(init);
+    ns.Resources.onReady(ns.init);
 
 /*
     var pickCharacter = function () {

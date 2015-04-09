@@ -26,37 +26,130 @@
         <img src="images/LetterE.png">
         <img src="images/LetterR.png">
     </div>
-<!--
-        <div id="character-menu">
-            <h2>Pick a character</h2>
-            <div class="btn-group" data-toggle="buttons">
-                <label class="btn">
-                    <input type="radio" id="char-boy" name="character" value="boy"/>
-                    <img src="images/char-boy.png">
-                </label>
-                <label class="btn">
-                    <input type="radio" id="char-girl" name="character" value="girl"/>
-                    <img src="images/char-cat-girl.png">
-                </label>
+    <!--
+            <div id="character-menu">
+                <h2>Pick a character</h2>
+                <div class="btn-group" data-toggle="buttons">
+                    <label class="btn">
+                        <input type="radio" id="char-boy" name="character" value="boy"/>
+                        <img src="images/char-boy.png">
+                    </label>
+                    <label class="btn">
+                        <input type="radio" id="char-girl" name="character" value="girl"/>
+                        <img src="images/char-cat-girl.png">
+                    </label>
+                </div>
+            </div>
+    -->
+
+    <div class="jumbotron" id="welcome-msg">
+        <h1>
+            Hello!! Welcome to Frogger!
+        </h1>
+
+        <p>
+            Hope you enjoy playing this simple game :-) <br>
+            Please click on the 'New Game' button to get started.... <br>
+            Use the 'Stop Game' button to quit your current game... <br>
+            If you would like to take a look at the rules, click
+            <a id="game-rules" data-toggle="modal" data-target="#rules-modal">here</a>
+            <!-- on the 'Rules' button.-->
+        </p>
+    </div>
+
+    <div class="menu">
+        <a class="btn btn-lg btn-success" href="#game" role="button" id="new-game">New Game</a>
+        <a class="btn btn-lg btn-success" href="#game" role="button" id="stop-game">Quit Game</a>
+    </div>
+
+    <div id="game">
+        <div id="game-summary" class="row">
+            <div class="col-lg-1 col-md-1 col-md-offset-4 col-lg-offset-4">
+                <img src="images/Heart.png" class="game-summary-icon" alt="Life Remaining">
+            </div>
+            <div class="col-lg-1 col-md-1">
+                <h3 id="life" class="game-summary-table"></h3>
+            </div>
+            <div class="col-lg-1 col-md-1">
+                <img src="images/star.png" class="game-summary-icon" alt="Total Points">
+            </div>
+            <div class="col-lg-1 col-md-1">
+                <h3 id="points" class="game-summary-table"></h3>
             </div>
         </div>
--->
-    <div id="game-summary" class="row">
-        <div class="col-lg-1 col-md-1 col-md-offset-4 col-lg-offset-4">
-            <img src="images/Heart.png" class="game-summary-icon" alt="Life Remaining">
-        </div>
-        <div class="col-lg-1 col-md-1">
-            <h3 id="life" class="game-summary-table">3</h3>
-        </div>
-        <div class="col-lg-1 col-md-1">
-            <img src="images/star.png" class="game-summary-icon" alt="Total Points">
-        </div>
-        <div class="col-lg-1 col-md-1">
-            <h3 id="points" class="game-summary-table">0</h3>
+
+        <div id="canvas-placeholder"></div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="rules-modal" tabindex="-1" role="dialog" aria-labelledby="FroggerRules"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h1 class="modal-title">Rules of the Frogger Game</h1>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        The game surface has 2 rows of grass, 3 rows of stones and a row of water. <br>
+                        There are bugs running across the stone rows that are the enemies and a stone on one of the rows
+                        that the
+                        player has to avoid. <br>
+                        There are also gems for extra points - <br>
+                        <ul id="gems">
+                            <li>Orange - 5 pts</li>
+                            <li>Blue - 15 pts</li>
+                            <li>Green - 25 pts</li>
+                            <li>Star - 50 pts</li>
+                        </ul>
+                        The player starts with 3 lives. <br>
+                        The aim of the game is for the player to start on the grass rows, move one square at a time across
+                        the stones and get to the water without being hit by the bugs or hitting a stone. <br>
+                        The player looses a life everytime he hits a rock or bug. When the player looses all 3 lives, he is
+                        prompted either to start a new game or quit. <br>
+                        The player gets 200 points everytime he reaches the water and extra points from the gems. <br>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
         </div>
     </div>
-    <div id="canvas-placeholder"></div>
-</div>
-<script src="js/engine.js"></script>
+
+    <div class="modal fade" id="game-summary-modal" tabindex="-1" role="dialog" aria-labelledby="NewGame"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h2 class="modal-title">Final Game Summary</h2>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        Hope you enjoyed playing Frogger. <br>
+                        Here's your most recent game summary.....<br>
+                        No. of Gems collected -
+                    <ul>
+                        <li>Orange Gems: <span id="orange"></span></li>
+                        <li>Blue Gems: <span id="blue"></span></li>
+                        <li>Green Gems: <span id="green"></span></li>
+                        <li>Stars: <span id="star"></span></li>
+                        <li>Total Points: <span id="total"></span></li>
+                    </ul>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button id="btn-close" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/engine.js"></script>
+    <script src="js/bootstrap.min.js"></script>
 </body>
 </html>

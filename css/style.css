@@ -20,10 +20,25 @@ h3 {
     text-align: center;
 }
 
+/*
 .btn-default,
 .btn {
     background-color: #70efe6;
     border: none;
+}
+*/
+
+#welcome-msg {
+    margin: 50px 100px;
+    font-size: large;
+    /*background-color: #70efe6;*/
+    background-color: #f4c3c0;
+}
+
+#welcome-msg h1,
+#welcome-msg p {
+    line-height: 1.5;
+    color: #dd2039;
 }
 
 .game-summary-icon {
@@ -35,6 +50,34 @@ h3 {
 .game-summary-table {
     float: left;
     margin: 30px 0 10px 0;
+    font-style: normal;
+    font-weight: bolder;
+    color: #0a3def;
+}
+
+.modal {
+    background-color: #cdcccf;
+}
+
+.modal-content {
+    background-color: #9dccf4;
+}
+
+.modal-body {
+    text-align: left;
+    margin: 10px 30px;
+    font-size: medium;
+    line-height: 1.5;
+}
+
+.modal-header,
+.modal-footer {
+    background-color: #b5cf6f;
+}
+
+ul {
+    list-style-type: none;
+    margin-left: 35px;
 }
 
 #title-imgage {
@@ -49,6 +92,6 @@ h3 {
 }
 
 #game-summary {
-    margin-top: 40px;
+    margin-top: 10px;
     text-align: left;
 }

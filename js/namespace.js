@@ -9,5 +9,5 @@
 
 "use strict";
 
-var MYRESUMEAPP = MYRESUMEAPP || {}; // Global Namespace
+var froggerGame = froggerGame || {}; // Global Namespace
 

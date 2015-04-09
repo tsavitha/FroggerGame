@@ -5,7 +5,7 @@
  * to load the same image multiple times.
  */
 (function() {
-    var ns = MYRESUMEAPP; // Creating an alias for the global namespace.
+    var ns = froggerGame; // Creating an alias for the global namespace.
 
     var resourceCache = {};
     var loading = [];
