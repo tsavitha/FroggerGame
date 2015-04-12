@@ -14,7 +14,7 @@
  * a little simpler to work with.
  */
 
-var ns = froggerGame||{}; // Creating an alias for the global namespace.
+var ns = froggerGame || {}; // Creating an alias for the global namespace.
 
 ns.Engine = (function (global) {
 
@@ -83,7 +83,7 @@ ns.Engine = (function (global) {
         reset();
         render();
         ns.resetGameSummary();
-    }
+    };
 
     /* This function does nothing but it could have been a good place to
      * handle game reset states - maybe a new game menu or a game over screen
@@ -103,7 +103,7 @@ ns.Engine = (function (global) {
             lastTime = Date.now();
             main();
         }
-    }
+    };
 
     $('#stop-game').click(function() {
 
@@ -238,21 +238,6 @@ ns.Engine = (function (global) {
 
     ns.Resources.onReady(ns.init);
 
-/*
-    var pickCharacter = function () {
-        $('#char-boy').click(function () {
-            ns.characterUrl = 'images/char-boy.png';
-            ns.player.sprite = 'images/char-boy.png';
-            ns.proceed = true;
-        });
-        $('#char-girl').click(function () {
-            ns.characterUrl = 'images/char-cat-girl.png';
-            ns.player.sprite = 'images/char-cat-girl.png';
-            ns.proceed = true;
-        });
-    }();
-
-*/
     /* Assign the canvas' context object to the global variable (the window
      * object when run in a browser) so that developer's can use it more easily
      * from within their app.js files.

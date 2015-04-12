@@ -1,6 +1,6 @@
 (function () {
 
-    var ns = froggerGame||{}; // Creating an alias for the global namespace.
+    var ns = froggerGame || {}; // Creating an alias for the global namespace.
 
     var NSTONEROWS = 3;
     var HOMEPOINTS = 200;
@@ -47,7 +47,6 @@
     };
 
     ns.stopGame = function() {
-
         getRecentGameSummary();
         $('#game-summary-modal').modal({
             keyboard: false
@@ -55,7 +54,7 @@
         ns.stop();
         ns.init();
 
-    }
+    };
 
     var resetPlay = function() {
         if(ns.player.life > 0) {
@@ -76,6 +75,8 @@
         }
     };
 
+    // reachedHome() checks if the player has reached his destination in which case adds 'HOMEPOINTS' - 200
+    // and resets play.
     var reachedHome = function() {
         if(ns.player.vy === 0) {
             ns.player.points += HOMEPOINTS;
@@ -84,6 +85,10 @@
         }
     };
 
+    // enemyCollision() checks if the player has collided with any of the enemies moving across the stone rows.
+    // If yes, the player's life is decrased by 1, life summary is updated,
+    // and play is reset so the player has to start again.
+    // If no, the play continues.
     var enemyCollision = function() {
 
         if(ns.player.vx > 0 && ns.player.vy < 4) {
@@ -97,7 +102,10 @@
         }
     };
 
-
+    // rockCollision() checks to see if the player has collided with a rock.
+    // If yes, the player's life is decrased by 1, life summary is updated,
+    // and play is reset so the player has to start again.
+    // If no, the play continues.
     var rockCollision = function() {
 
         if(ns.player.vx > 0 && ns.player.vy < 4) {
@@ -109,6 +117,10 @@
         }
     };
 
+    // redeemReward() checks if the player has occupied the same position as a reward.
+    // If yes, then the corresponding points are added to the player's points, game summary
+    // is updated and a new reward instance is created.
+    // If no, play continues.
     var redeemReward = function() {
         if(!ns.reward.redeemed && ns.player.vx > 0 && ns.player.vy < 4) {
             if((ns.reward.x-15) === ns.player.x && (ns.reward.y-10) === ns.player.y) {
@@ -120,32 +132,29 @@
         }
     };
 
+    // This method is called after the player and the enemy positions have been updated.
     ns.checkCollisions = function() {
         enemyCollision();
         rockCollision();
         redeemReward();
     };
 
-// Enemies our player must avoid
+    // Enemy class - player must avoid enemy to not loose his life
     var Enemy = function () {
-        // Variables applied to each of our instances go here,
-        // we've provided one for you to get started
-
         // The image/sprite for our enemies, this uses
-        // a helper we've provided to easily load images
+        // a helper to easily load images
         this.sprite = 'images/enemy-bug.png';
         this.x = 0;
         this.y = (getRandomNumberBetween(1, 3) * ns.ROWPIXELCOUNT) - 20;
         this.incrementer = Math.round(Math.random() * 7 + 1);
     };
 
-// Update the enemy's position, required method for game
-// Parameter: dt, a time delta between ticks
+    // Update the enemy's position, required method for game
+    // Parameter: dt, a time delta between ticks
     Enemy.prototype.update = function (dt) {
         // You should multiply any movement by the dt parameter
         // which will ensure the game runs at the same speed for
         // all computers.
-
         if (this.x > 505) {
             this.x = 0;
             this.y = (getRandomNumberBetween(1, 3) * ns.ROWPIXELCOUNT) - 20;
@@ -156,16 +165,17 @@
         }
     };
 
-// Draw the enemy on the screen, required method for game
+    // Draw the enemy on the screen, required method for game
     Enemy.prototype.render = function () {
         ns.ctx.drawImage(ns.Resources.get(this.sprite), this.x, this.y);
 
     };
 
-// Now write your own player class
-// This class requires an update(), render() and
-// a handleInput() method.
+    // Player class
+    // This class has an update(), render() and a handleInput() method.
     var Player = function () {
+        // The image/sprite for the player, this uses
+        // a helper to easily load images
         this.sprite = 'images/char-boy.png';
         this.vx = 2;
         this.vy = 5;
@@ -177,10 +187,12 @@
             {'gem' : 'orange', 'noCollected' : 0},
             {'gem' : 'blue', 'noCollected' : 0},
             {'gem' : 'green', 'noCollected' : 0},
-            {'gem' : 'star', 'noCollected' : 0},
+            {'gem' : 'star', 'noCollected' : 0}
         ];
     };
 
+    // update() method called each time the game surface is redrawn to update player position.
+    // Also checks if the player has reached the destination, which in this case is the water.
     Player.prototype.update = function (dt) {
 
         this.x = this.vx * ns.COLPIXELCOUNT;
@@ -192,7 +204,10 @@
         ns.ctx.drawImage(ns.Resources.get(this.sprite), this.x, this.y);
     };
 
-    Player.prototype.handleInput = function (keyCode, event) {
+    // The handleInput() method takes the keycode for the up, right, down and left keys
+    // as parameter moves the player accordingly. This method also makes sure that the
+    // player does not go out of bounds.
+    Player.prototype.handleInput = function (keyCode) {
         switch (keyCode) {
             case 'left' :
                 if (this.vx > 0) {
@@ -226,7 +241,12 @@
         event.stopPropagation();
     }
 
+    // Rock class
+    // This class uses a Random Number Generator method to get the placement position
+    // for the rock and is rendered onto the game surface by the render() method.
     var Rock = function() {
+        // The image/sprite for the rock, this uses
+        // a helper to easily load images
         this.sprite = 'images/rock.png';
         this.x = (getRandomNumberBetween(1, 3) * ns.COLPIXELCOUNT);
         this.y = (getRandomNumberBetween(1, 3) * ns.ROWPIXELCOUNT) - 20;
@@ -236,6 +256,24 @@
         ns.ctx.drawImage(ns.Resources.get(this.sprite), this.x, this.y);
     };
 
+    // Reward class
+    // Each time a random gem is selected and placed in a random position.
+    var Reward = function() {
+        // The image/sprite for the reward, this uses
+        // a helper to easily load images
+        this.sprite = rewardsArr[this.randomSel].url;
+        this.randomSel = getRandomNumberBetween(0, 3);
+        point = getRewardPosition();
+        this.x = point.x + 15;
+        this.y = point.y + 10;
+        this.redeemed = false;
+    };
+
+    Reward.prototype.render = function() {
+        ns.ctx.drawImage(ns.Resources.get(this.sprite), this.x, this.y);
+    };
+
+    // An array of objects containing the url to the gem images and the corresponding points.
     var rewardsArr = [
         {'url' : 'images/gem-orange.png', 'points' : 5},
         {'url' : 'images/gem-blue.png', 'points' : 15},
@@ -243,6 +281,8 @@
         {'url' : 'images/star.png', 'points' : 50}
     ];
 
+    // This method returns a point object containing x and y co-ordinates
+    // that is randomly generated.
     var getRewardPosition = function() {
         point = {};
 
@@ -254,25 +294,13 @@
         return point;
     };
 
-    var Reward = function() {
-        this.randomSel = getRandomNumberBetween(0, 3);
-        this.sprite = rewardsArr[this.randomSel].url;
-        point = getRewardPosition();
-        this.x = point.x + 15;
-        this.y = point.y + 10;
-        this.redeemed = false;
-    };
-
-    Reward.prototype.render = function() {
-        ns.ctx.drawImage(ns.Resources.get(this.sprite), this.x, this.y);
-    };
-
+    // Object instantiation.
+    // Place all enemy objects in an array called allEnemies
+    // Place the player object in a variable called player,
+    // rock object in a variable called rock and
+    // reward onject in a variable caled reward.
 
     ns.createInstances = function() {
-
-        // Now instantiate your objects.
-        // Place all enemy objects in an array called allEnemies
-        // Place the player object in a variable called player
 
         var i;
         ns.allEnemies = [];
@@ -281,16 +309,16 @@
             ns.allEnemies.push(new Enemy());
         }
 
+        ns.player = new Player();
+
         ns.rock = new Rock();
 
         ns.reward = new Reward();
 
-        ns.player = new Player();
-
     };
 
-    // This listens for key presses and sends the keys to your
-    // Player.handleInput() method. You don't need to modify this.
+    // This listens for key presses and sends the keys to the
+    // Player.handleInput() method.
 
     document.addEventListener('keydown', function (e) {
         var allowedKeys = {
@@ -300,7 +328,7 @@
             40: 'down'
         };
 
-        ns.player.handleInput(allowedKeys[e.keyCode], e);
+        ns.player.handleInput(allowedKeys[e.keyCode]);
 
     });
 })();

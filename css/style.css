@@ -14,31 +14,19 @@ h3 {
     font-family: 'lucida grande', tahoma, verdana, arial, sans-serif;
 }
 
+a {
+    cursor: pointer;
+}
+
+ul {
+    list-style-type: none;
+    margin-left: 35px;
+}
+
 .container {
     padding: 0;
     background-color: #70efe6;
     text-align: center;
-}
-
-/*
-.btn-default,
-.btn {
-    background-color: #70efe6;
-    border: none;
-}
-*/
-
-#welcome-msg {
-    margin: 50px 100px;
-    font-size: large;
-    /*background-color: #70efe6;*/
-    background-color: #f4c3c0;
-}
-
-#welcome-msg h1,
-#welcome-msg p {
-    line-height: 1.5;
-    color: #dd2039;
 }
 
 .game-summary-icon {
@@ -75,9 +63,16 @@ h3 {
     background-color: #b5cf6f;
 }
 
-ul {
-    list-style-type: none;
-    margin-left: 35px;
+#welcome-msg {
+    margin: 50px 100px;
+    font-size: large;
+    background-color: #f4c3c0;
+}
+
+#welcome-msg h1,
+#welcome-msg p {
+    line-height: 1.5;
+    color: #dd2039;
 }
 
 #title-imgage {
