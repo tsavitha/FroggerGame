@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <!-- This tells the browser how to read the document. -->
+    <meta charset="utf-8">
+
+    <!-- Tells the browser what the title of this page should be. -->
     <title>Effective JavaScript: Frogger</title>
 
     <!-- Load the page and bootstrap stylesheets -->
@@ -18,14 +22,18 @@
 <body>
 <div id="main" class="container">
     <div id="title-imgage">
-        <img src="images/LetterF.png">
-        <img src="images/LetterR.png">
-        <img src="images/LetterO.png">
-        <img src="images/LetterG.png">
-        <img src="images/LetterG.png">
-        <img src="images/LetterE.png">
-        <img src="images/LetterR.png">
+        <img src="images/LetterF.png" alt="F">
+        <img src="images/LetterR.png" alt="R">
+        <img src="images/LetterO.png" alt="O">
+        <img src="images/LetterG.png" alt="G">
+        <img src="images/LetterG.png" alt="G">
+        <img src="images/LetterE.png" alt="E">
+        <img src="images/LetterR.png" alt="R">
     </div>
+
+    <!--
+      * Div that displays the welcome message
+      -->
 
     <div class="jumbotron" id="welcome-msg">
         <h1>
@@ -42,10 +50,18 @@
         </p>
     </div>
 
+    <!--
+      * Div that displays the New and Quit Game buttons
+      -->
+
     <div class="menu">
         <a class="btn btn-lg btn-success" href="#game" role="button" id="new-game">New Game</a>
         <a class="btn btn-lg btn-success" href="#game" role="button" id="stop-game">Quit Game</a>
     </div>
+
+    <!--
+      * Div that displays the Game surface
+      -->
 
     <div id="game">
         <div id="game-summary" class="row">
@@ -53,35 +69,38 @@
                 <img src="images/Heart.png" class="game-summary-icon" alt="Life Remaining">
             </div>
             <div class="col-lg-1 col-md-1">
-                <h3 id="life" class="game-summary-table"></h3>
+                <h3 id="life" class="game-summary-table">3</h3>
             </div>
             <div class="col-lg-1 col-md-1">
                 <img src="images/star.png" class="game-summary-icon" alt="Total Points">
             </div>
             <div class="col-lg-1 col-md-1">
-                <h3 id="points" class="game-summary-table"></h3>
+                <h3 id="points" class="game-summary-table">0</h3>
             </div>
         </div>
 
         <div id="canvas-placeholder"></div>
     </div>
 
-    <!-- Modal -->
-    <div class="modal fade" id="rules-modal" tabindex="-1" role="dialog" aria-labelledby="FroggerRules"
-         aria-hidden="true">
+    <!--
+      * Modal dialog that displays the rules of the Frogger Game.
+      aria-labelledby="rules-modal-label"
+      -->
+
+    <div class="modal fade" id="rules-modal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                            aria-hidden="true">&times;</span></button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                     <h1 class="modal-title">Rules of the Frogger Game</h1>
                 </div>
                 <div class="modal-body">
                         The game surface has 2 rows of grass, 3 rows of stones and a row of water. <br>
-                        There are bugs running across the stone rows that are the enemies and a stone on one of the rows
-                        that the
-                        player has to avoid. <br>
-                        There are also gems for extra points - <br>
+                        There are bugs running across the stone rows that are the enemies and a rock on one of the
+                        stone rows that the player has to avoid. <br>
+                        There are gems for extra points - <br>
                         <ul id="gems">
                             <li>Orange - 5 pts</li>
                             <li>Blue - 15 pts</li>
@@ -90,10 +109,10 @@
                         </ul>
                         The player starts with 3 lives. <br>
                         The aim of the game is for the player to start on the grass rows, move one square at a time across
-                        the stones and get to the water without being hit by the bugs or hitting a stone. <br>
+                        the stones and get to the water without being hit by the bugs or colliding with a rock. <br>
                         The player looses a life everytime he hits a rock or bug. When the player looses all 3 lives, he is
                         prompted either to start a new game or quit. <br>
-                        The player gets 200 points everytime he reaches the water and extra points from the gems. <br>
+                        The player gets 200 points everytime he reaches the water and and the game is reset to play again. <br>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -102,8 +121,12 @@
         </div>
     </div>
 
-    <div class="modal fade" id="game-summary-modal" tabindex="-1" role="dialog" aria-labelledby="NewGame"
-         aria-hidden="true">
+    <!--
+      * Modal dialog that displays the Summary of the most recent game.
+      aria-labelledby="game-summary-modal-label"
+      -->
+
+    <div class="modal fade" id="game-summary-modal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -129,6 +152,12 @@
             </div>
         </div>
     </div>
+
+    <!--
+    The next line tells the browser where to download the JavaScript file.
+    engine.js contains the game loop code and code to render the images of
+    the game surface.
+    -->
 
     <script src="js/engine.js"></script>
     <script src="js/bootstrap.min.js"></script>

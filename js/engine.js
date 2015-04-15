@@ -75,8 +75,7 @@ ns.Engine = (function (global) {
     }
 
     /* This function is called everytime a new game is started and does
-     * some initial setup that should only occur once, particularly
-     * setting the lastTime variable that is required for the game loop.
+     * some initial setup that should only occur once.
      */
     ns.init = function () {
         //$('#canvas-placeholder').append(ns.canvas);
@@ -85,18 +84,24 @@ ns.Engine = (function (global) {
         ns.resetGameSummary();
     };
 
-    /* This function does nothing but it could have been a good place to
-     * handle game reset states - maybe a new game menu or a game over screen
-     * those sorts of things. It's only called once by the init() method.
+    /* This method calls the createInsiances() method evertyime the game is reset
+     * to start a new game.
      */
     function reset() {
         ns.createInstances();
     }
 
+    /* 'New Game' button's click event handler.
+     * Calls the start() method which gets the game going...
+     */
     $('#new-game').click(function() {
         ns.start();
     });
 
+    /* This is the starting point in the game. The first call to the
+     * main() method that gets the game loop started is made here.
+     * The game control variable - 'proceed', is also set to true here.
+     */
     ns.start = function () {
         if(requestId === null) {
             ns.proceed = true;
@@ -105,6 +110,11 @@ ns.Engine = (function (global) {
         }
     };
 
+    /* 'Quit Game' button's click event handler.
+     * Displays a confirmation box to check if the user really wants to quit.
+     * The stopGame() method is called on confirmation and if the user clicks
+     * 'No' the game continues.
+     */
     $('#stop-game').click(function() {
 
         var quitGame = confirm("Are you sure you want to quit?");
@@ -114,6 +124,9 @@ ns.Engine = (function (global) {
         }
     });
 
+    /* Resets the game control variable - 'proceed' to false so that the game
+     * loop stops.
+     */
     ns.stop = function() {
         if(requestId !== null) {
             //$('#canvas-placeholder').empty();
@@ -123,13 +136,9 @@ ns.Engine = (function (global) {
     };
 
     /* This function is called by main (our game loop) and itself calls all
-     * of the functions which may need to update entity's data. Based on how
-     * you implement your collision detection (when two entities occupy the
-     * same space, for instance when your character should die), you may find
-     * the need to add an additional function call here. For now, we've left
-     * it commented out - you may or may not want to implement this
-     * functionality this way (you could just implement collision detection
-     * on the entities themselves within your app.js file).
+     * of the functions which may need to update entity's data.
+     * Then calls the checkCollisions() method to check if the Player has
+     * collided with rocks or enemies.
      */
     function update(dt) {
         updateEntities(dt);
@@ -137,11 +146,10 @@ ns.Engine = (function (global) {
     }
 
     /* This is called by the update function  and loops through all of the
-     * objects within your allEnemies array as defined in app.js and calls
-     * their update() methods. It will then call the update function for your
-     * player object. These update methods should focus purely on updating
-     * the data/properties related to  the object. Do your drawing in your
-     * render methods.
+     * objects within the allEnemies array as defined in app.js and calls
+     * their update() methods. It will then call the update function for the
+     * player object. These update methods focus purely on updating the
+     * data/properties related to  the object.
      */
     function updateEntities(dt) {
         ns.allEnemies.forEach(function (enemy) {
@@ -218,9 +226,9 @@ ns.Engine = (function (global) {
 
     }
 
-    /* Go ahead and load all of the images we know we're going to need to
-     * draw our game level. Then set init as the callback method, so that when
-     * all of these images are properly loaded our game will start.
+    /* Load all of the images that is going to need to draw our game level.
+     * Then set init as the callback method, so that when all of these
+     * images are properly loaded our game will start.
      */
     ns.Resources.load([
         'images/stone-block.png',
